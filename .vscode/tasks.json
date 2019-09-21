@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "c++",
+            "args": [
+                "server.cpp",
+                "-o",
+                "server",
+                "\"C:\\MinGW\\lib\\libws2_32.a\""
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+        
+    ]
+}
