@@ -5,17 +5,19 @@
 #include <sstream>
 
 #include "ReqRes.h"
+
+
  
 using namespace std;
 
-//dev
 
-//dev
 
 int main()
-{
+{   
     //get file
     //saparete this ******
+
+    /*
     fstream htmlfile;
     htmlfile.open("index.html");
     
@@ -24,10 +26,12 @@ int main()
     string tochar = sstream.str();
     tochar.insert(0,"HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " + to_string(tochar.size()) + "\n\n");
     
+    
+
     char *htmlpage =  new char[tochar.size()];
     //std::cout<<strlen(tochar.c_str) <<"   "<<tochar.size() + 1<<std::endl;
     strcpy(htmlpage, tochar.c_str());
-    
+    */
     cout <<"start" <<endl;
     //**********************
 
@@ -60,9 +64,12 @@ int main()
         {
             cout << "Client connected!" << endl;
             recv(client, buffer, sizeof(buffer), 0);
-            //cout << "Client says: \n ********" << endl << buffer << endl;
+            cout << "Client says: \n ********" << endl << buffer << endl;
+            //cout<<"get wants = \n"<<Req::reqFile(buffer)<<"\n\n\n"<<endl;
+            cout<<"Resp header = \n"<<Req::makeResp(buffer)<<"\n\n\n"<<endl;
 
-            
+            char *htmlpage =  new char[Req::makeResp(buffer).size()];
+            strcpy(htmlpage, Req::makeResp(buffer).c_str());
             
 
             memset(buffer, 0, sizeof(buffer));
@@ -70,13 +77,13 @@ int main()
     
             closesocket(client);
             cout << "Client disconnected." << endl;
-            /* print what am i sending
-            for(int i = 0; htmlpage[i] != 0;i++){
-                cout<<htmlpage[i];
-            }
-            std::cout<<endl;*/
+
+            //delete [] htmlpage; // why i cant delete???????
+
+            cout << "deleted" << endl;
             //cin.get();
         }
+        
     }
 }
 
