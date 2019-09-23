@@ -1,41 +1,31 @@
-//#include <iostream> //inluded in ReqRes.h
-#include <winsock2.h>
+//#include <iostream>
 //#include <fstream>
-#include <string> //inluded in ReqRes.h
+//#include <string>
+#include <winsock2.h>
 #include <sstream>
-
 #include "ReqRes.h"
 
 
+/*
+****************TODO***************
+* 
+* make a include/link file
+* multitread
+* request limitation
+* print macro for debug mode
+* client requests log?
+* ASCII ui for data visualization?
+* clean code
+* 
+***********************************
+*/
+
+
  
-using namespace std;
-
-
-
 int main()
 {   
-    //get file
-    //saparete this ******
-
-    /*
-    fstream htmlfile;
-    htmlfile.open("index.html");
-    
-    std::ostringstream sstream;
-    sstream << htmlfile.rdbuf();
-    string tochar = sstream.str();
-    tochar.insert(0,"HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " + to_string(tochar.size()) + "\n\n");
-    
-    
-
-    char *htmlpage =  new char[tochar.size()];
-    //std::cout<<strlen(tochar.c_str) <<"   "<<tochar.size() + 1<<std::endl;
-    strcpy(htmlpage, tochar.c_str());
-    */
-    cout <<"start" <<endl;
+    std::cout <<"start" <<std::endl;
     //**********************
-
-
 
     WSADATA WSAData;
  
@@ -55,33 +45,29 @@ int main()
 
         listen(server, 0);
     
-        cout << "Listening for incoming connections..." << endl;
+        std::cout << "Listening for incoming connections..." << std::endl;
     
-        char buffer[1024];
-        char newmessage[1024] = "fromServer";
+        char buffer[1024]; //for receive client request
+        
         int clientAddrSize = sizeof(clientAddr);
         if((client = accept(server, (SOCKADDR *)&clientAddr, &clientAddrSize)) != INVALID_SOCKET)
         {
-            cout << "Client connected!" << endl;
+            std::cout << "Client connected!" << std::endl;
             recv(client, buffer, sizeof(buffer), 0);
-            cout << "Client says: \n ********" << endl << buffer << endl;
-            //cout<<"get wants = \n"<<Req::reqFile(buffer)<<"\n\n\n"<<endl;
-            cout<<"Resp header = \n"<<Req::makeResp(buffer)<<"\n\n\n"<<endl;
 
-            char *htmlpage =  new char[Req::makeResp(buffer).size()];
-            strcpy(htmlpage, Req::makeResp(buffer).c_str());
+            //std::cout << "Client says: \n ********" << std::endl << buffer << std::endl;
+
+            //*****
+            ReqRes Req; //instantiate ReqRes class to http request handling
+            //*****
             
+            send(client,Req.makeResp(buffer), strlen(Req.makeResp(buffer)),0);
 
-            memset(buffer, 0, sizeof(buffer));
-            send(client,htmlpage, sizeof(newmessage),0);
-    
+            memset(buffer, 0, sizeof(buffer)); //set buffer to 0
             closesocket(client);
-            cout << "Client disconnected." << endl;
-
-            //delete [] htmlpage; // why i cant delete???????
-
-            cout << "deleted" << endl;
-            //cin.get();
+            std::cout << "Client disconnected." << std::endl;
+            
+            //std::cin.get();
         }
         
     }

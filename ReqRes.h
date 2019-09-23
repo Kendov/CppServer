@@ -3,59 +3,23 @@
 #include <fstream>
 
 //requisition metods
-//enum reqMet{GET, POST, PUT, PATCH, DELETE};
-const std::string CODE200 = "200 OK";
-const std::string CODE404 = "404 Not Found";
 
-//*****************TODO****************
-//Put everything in classes and clean all this mess
 
-namespace Req{
 
-    //get request type
-    std::string reqType(char buffer[]){
-        std::string output;
-        
+class ReqRes{
+private:
+    
+    
+    const std::string CODE200 = "200 OK";
+    const std::string CODE404 = "404 Not Found";
 
-        for(int i = 0;buffer[i] != ' ';i++){
-            
-            output += buffer[i];
-            
-        }
-        
-        
+    char *respOutput;
 
-        return output;
-    }
-
-    bool isGet(char buffer[]){
-        return reqType(buffer) == "GET"? true:false;
-    }
-
-    //return file request
-    std::string reqFile(char buffer[]){
-        std::string output;
-        int spaceCount = 0;
-        for(int i = 0; buffer[i]!= '\n';i++){
-            if(buffer[i] == ' '){
-                spaceCount++;
-                continue;
-            }
-
-            if(spaceCount > 0 && spaceCount < 2){
-                if(buffer[i] != '/')
-                    output += buffer[i];
-            }
-            if(spaceCount > 1)
-                break;
-
-        }
-        
-        return output == ""? "index.html":output;
-    }
+    //used for the httpHeader function. It returns the content type based on the filename extension
     std::string contType(std::string request){
         std::string type;
         bool isType = false;
+
         for(int i = 0; i < request.size(); i++){
             if(request[i] == '.'){
                 isType = true;
@@ -74,6 +38,66 @@ namespace Req{
         if(type == "jpeg" || type == "jpg" ) return "image/jpe";
         if(type == "png"                   ) return "image/png";
     }
+
+public:
+    /*
+    ReqRes(char buffer[]){
+        //inpBufferP = new char[sizeof(buffer)];
+        //inpBufferP = buffer;
+        
+    }
+    */
+    /*
+    ~ReqRes(){
+        //std::cout<<inpBufferP<<std::endl;
+        
+        //delete[] respOutput;  //??????  if delete this pointer the server crashes 
+        std::cout<<"respOutput deleted"<<std::endl;
+    }
+    */
+    
+    //get request type
+    std::string reqType(char buffer[]){
+        std::string output;
+        
+
+        for(int i = 0;buffer[i] != ' ';i++){
+            
+            output += buffer[i];
+            
+        }
+
+        return output;
+    }
+
+    bool isGet(char buffer[]){
+        return reqType(buffer) == "GET"? true:false;
+    }
+    
+    //return file request
+    std::string reqFile(char inpbuffer[]){
+        std::string fileoutput;
+        int spaceCount = 0;
+        for(int i = 0; inpbuffer[i]!= '\n';i++){
+            if(inpbuffer[i] == ' '){
+                spaceCount++;
+                continue;
+            }
+            
+            if(spaceCount > 0 && spaceCount < 2){
+                if(inpbuffer[i] != '/')
+                    fileoutput += inpbuffer[i];
+                
+            }
+            if(spaceCount > 1)
+                break;
+
+        }
+        
+        return fileoutput == ""? "index.html":fileoutput;
+        //if fileoutput is empty return the index.html file
+    }
+    
     
 
     std::string httpHeader(std::string statusCode, std::string contType, int size){
@@ -88,7 +112,8 @@ namespace Req{
     }
 
     //make http header
-    std::string makeResp(char buffer[]){
+    
+    char* makeResp(char buffer[]){
 
         
 
@@ -96,8 +121,14 @@ namespace Req{
         file.open(reqFile(buffer));
 
         if(!file){
-            std::string error = "ERROR File not found";
-            return httpHeader(CODE404, "text/plain", error.size()) + error;
+            std::cout <<"erro cant open file: "<< reqFile(buffer) <<std::endl;
+            std::cout <<buffer<<std::endl;
+            std::string message = "ERROR File not found";
+            std::string error = httpHeader(CODE404, "text/plain", error.size()) + message;
+
+            respOutput =  new char[error.size()];
+            strcpy(respOutput, error.c_str());
+            return respOutput;
         }
 
         std::ostringstream sstream;
@@ -108,14 +139,16 @@ namespace Req{
         std::string body = sstream.str();
 
         std::string response = httpHeader(CODE200, contType(reqFile(buffer)), body.size());
-        return response + body;
+        std::string message = response + body;
+        respOutput =  new char[message.size()];
+        strcpy(respOutput, message.c_str());
+
+        return respOutput;
     }
+    
 
     //get file requisition
 
     //
 };
 
-namespace res{
-    //return file asked
-}
