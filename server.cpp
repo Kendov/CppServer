@@ -1,8 +1,8 @@
-//#include <iostream>
 //#include <fstream>
 //#include <string>
+//#include <sstream>
+#include <iostream>
 #include <winsock2.h>
-#include <sstream>
 #include "ReqRes.h"
 
 
@@ -61,8 +61,9 @@ int main()
             ReqRes Req; //instantiate ReqRes class to http request handling
             //*****
             
-            send(client,Req.makeResp(buffer), strlen(Req.makeResp(buffer)),0);
-
+            //****BAD calling lots of functions to get the size of response!!!!!!****
+            send(client,Req.makeResp(buffer), strlen(Req.makeResp(buffer)),0); 
+            
             memset(buffer, 0, sizeof(buffer)); //set buffer to 0
             closesocket(client);
             std::cout << "Client disconnected." << std::endl;
