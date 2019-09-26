@@ -15,13 +15,9 @@ private:
     std::string contType(std::string request);
 
 public:
-    /*
-    ReqRes(char buffer[]){
-        //inpBufferP = new char[sizeof(buffer)];
-        //inpBufferP = buffer;
-        
-    }
-    */
+    int responseSize;  //hold the size of the makeResp function return message
+
+    
     /*
     ~ReqRes(){
         //std::cout<<inpBufferP<<std::endl;

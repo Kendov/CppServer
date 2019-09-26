@@ -98,26 +98,28 @@ char* ReqRes::makeResp(char buffer[]){
     file.open(reqFile(buffer));
 
     if(!file){
-        std::cout <<__LINE__<<"erro cant open file: "<< reqFile(buffer) <<std::endl;
+        std::cout <<"erro cant open file: "<< reqFile(buffer) <<std::endl;
         //std::cout <<buffer<<std::endl;
         std::string message = "ERROR File not found";
-        std::string error = httpHeader(CODE404, "text/plain", error.size()) + message;
+        std::string error = httpHeader(CODE404, "text/plain", message.size()) + message;
 
         respOutput =  new char[error.size()];
         strcpy(respOutput, error.c_str());
         return respOutput;
     }
-    std::cout<<__LINE__<<"responce call"<<std::endl;
+    
     std::ostringstream sstream;
     sstream << file.rdbuf();
 
     file.close();
 
-    std::string body = sstream.str();
-
+    std::string body = sstream.str(); // loosing some characters|||| geting wrong reponse size later
+    
     std::string response = httpHeader(CODE200, contType(reqFile(buffer)), body.size());
     std::string message = response + body;
-    respOutput =  new char[message.size()];
+    responseSize = message.size();
+    //std::cout <<"\n*********\n"<< message <<"\n*********\n"<<std::endl;
+    respOutput =  new char[responseSize];
     strcpy(respOutput, message.c_str());
 
     return respOutput;

@@ -55,15 +55,18 @@ int main()
             std::cout << "Client connected!" << std::endl;
             recv(client, buffer, sizeof(buffer), 0);
 
-            //std::cout << "Client says: \n ********" << std::endl << buffer << std::endl;
+            std::cout << "Client says: \n ********" << std::endl << buffer << std::endl;
 
             //*****
             ReqRes Req; //instantiate ReqRes class to http request handling
             //*****
             
             //****BAD calling lots of functions to get the size of response!!!!!!****
-            send(client,Req.makeResp(buffer), strlen(Req.makeResp(buffer)),0); 
             
+            send(client,Req.makeResp(buffer), Req.responseSize,0);
+            std::cout<<Req.responseSize<<std::endl; //414 
+            
+
             memset(buffer, 0, sizeof(buffer)); //set buffer to 0
             closesocket(client);
             std::cout << "Client disconnected." << std::endl;
