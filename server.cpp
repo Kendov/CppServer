@@ -46,8 +46,8 @@ int main()
         listen(server, 0);
     
         std::cout << "Listening for incoming connections..." << std::endl;
-    
         char buffer[1024]; //for receive client request
+    
         
         int clientAddrSize = sizeof(clientAddr);
         if((client = accept(server, (SOCKADDR *)&clientAddr, &clientAddrSize)) != INVALID_SOCKET)
@@ -55,16 +55,16 @@ int main()
             std::cout << "Client connected!" << std::endl;
             recv(client, buffer, sizeof(buffer), 0);
 
-            std::cout << "Client says: \n ********" << std::endl << buffer << std::endl;
+            std::cout << "Client says: \n ********" << std::endl << buffer << "**************" << std::endl;
 
             //*****
             ReqRes Req; //instantiate ReqRes class to http request handling
             //*****
             
-            //****BAD calling lots of functions to get the size of response!!!!!!****
+            
             
             send(client,Req.makeResp(buffer), Req.responseSize,0);
-            std::cout<<Req.responseSize<<std::endl; //414 
+            std::cout<<Req.responseSize<<std::endl; //414
             
 
             memset(buffer, 0, sizeof(buffer)); //set buffer to 0
